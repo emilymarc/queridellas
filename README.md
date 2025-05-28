@@ -33,7 +33,11 @@ O projeto inclui um exemplo funcional de **bot com Inteligência Artificial**, c
 
 ## 📸 Captura de Tela
 
-![Captura de Tela do Queridellas](https://github.com/emilymarc/queridellas/blob/main/screenshot.png)
+![image](https://github.com/user-attachments/assets/bdef79c1-dd3b-4f6a-b3d9-b8b4ea063b5a)
+
+![image](https://github.com/user-attachments/assets/d2937fd2-010e-4520-b8a3-179c67d8461c)
+
+
 
 ## 🛠️ Como Usar
 
