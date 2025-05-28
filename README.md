@@ -1,9 +1,4 @@
-# queridellas
 TCC - FLY EDUCAÇÃO - AI FUNDAMENTOS
-
-Claro! Aqui está o `README.md` atualizado com as informações que você pediu, destacando o propósito do projeto e a presença de um exemplo de bot com IA:
-
----
 
 # Queridellas
 
