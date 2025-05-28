@@ -1,0 +1,802 @@
+
+<!DOCTYPE html>
+<html dir="ltr" lang="pt-BR" class="theme light EHoceA kMJHRA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Queridellas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #FDF2F8;
+        }
+        
+        .chat-container {
+            max-width: 400px;
+            height: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.15);
+            background-color: white;
+        }
+        
+        .chat-header {
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        
+        .bot-message {
+            background-color: #FCE7F3;
+            border-radius: 18px 18px 18px 5px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .user-message {
+            background-color: #F3E8FF;
+            border-radius: 18px 18px 5px 18px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .option-button {
+            transition: all 0.3s;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .send-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: #DB2777;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Payment method styles */
+        .payment-card {
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mb-4{margin-bottom:1rem}.ml-4{margin-left:1rem}.mr-3{margin-right:0.75rem}.mb-3{margin-bottom:0.75rem}.flex{display:flex}.hidden{display:none}.h-10{height:2.5rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-full{width:100%}.max-w-\[80\%\]{max-width:80%}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.overflow-y-auto{overflow-y:auto}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-t{border-top-width:1px}.border-pink-100{--tw-border-opacity:1;border-color:rgb(252 231 243 / var(--tw-border-opacity, 1))}.border-purple-200{--tw-border-opacity:1;border-color:rgb(233 213 255 / var(--tw-border-opacity, 1))}.bg-pink-600{--tw-bg-opacity:1;background-color:rgb(219 39 119 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-green-100{--tw-bg-opacity:1;background-color:rgb(220 252 231 / var(--tw-bg-opacity, 1))}.bg-pink-100{--tw-bg-opacity:1;background-color:rgb(252 231 243 / var(--tw-bg-opacity, 1))}.bg-purple-100{--tw-bg-opacity:1;background-color:rgb(243 232 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-pink-500{--tw-gradient-from:#ec4899 var(--tw-gradient-from-position);--tw-gradient-to:rgb(236 72 153 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-purple-500{--tw-gradient-to:#a855f7 var(--tw-gradient-to-position)}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-3{padding:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pr-12{padding-right:3rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.text-pink-500{--tw-text-opacity:1;color:rgb(236 72 153 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-green-600{--tw-text-opacity:1;color:rgb(22 163 74 / var(--tw-text-opacity, 1))}.text-pink-600{--tw-text-opacity:1;color:rgb(219 39 119 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.opacity-80{opacity:0.8}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-pink-700:hover{--tw-bg-opacity:1;background-color:rgb(190 24 93 / var(--tw-bg-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-pink-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(236 72 153 / var(--tw-ring-opacity, 1))}</style></head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="chat-container flex flex-col">
+        <div class="chat-header bg-gradient-to-r from-pink-500 to-purple-500 p-4 text-white flex items-center">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg">Queridellas</h1>
+                <p class="text-xs opacity-80">Serviços femininos para sua casa</p>
+            </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4" id="chat-messages">
+            <!-- Messages will appear here -->
+        <div class="bot-message p-3 mb-3 max-w-[80%] text-sm">Olá! Bem-vinda ao atendimento da Queridellas, serviços femininos para sua casa. Como posso ajudar você hoje?</div><div class="bot-message p-3 mb-3 max-w-[80%] text-sm">Como posso ajudar você hoje?</div></div>
+        
+        <div id="typing-indicator" class="typing-indicator ml-4 hidden">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div id="options-container" class="flex flex-wrap gap-2 mb-4 px-4 justify-center"><button class="option-button bg-purple-100 text-purple-600 p-3 flex items-center gap-2 font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          </svg>
+                    <span>Serviços</span>
+                </button><button class="option-button bg-green-100 text-green-600 p-3 flex items-center gap-2 font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                          </svg>
+                    <span>Formas de Pagamento</span>
+                </button><button class="option-button bg-pink-100 text-pink-600 p-3 flex items-center gap-2 font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                    <span>Sobre Nós</span>
+                </button></div>
+        
+        <div class="p-4 border-t border-pink-100">
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Digite sua mensagem..." class="w-full px-5 py-3 border border-purple-200 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-500 pr-12">
+                <button id="send-button" class="send-button bg-pink-600 text-white p-2 rounded-full hover:bg-pink-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const optionsContainer = document.getElementById('options-container');
+        const typingIndicator = document.getElementById('typing-indicator');
+        
+        // Chat state
+        let chatState = {
+            context: 'initial',
+            selectedService: null,
+            selectedProfessional: null,
+            appointmentDate: null,
+            appointmentTime: null,
+            location: null,
+            paymentMethod: null
+        };
+        
+        // Services data
+        const services = {
+            eletricista: {
+                name: "Eletricista",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>`,
+                color: "bg-yellow-100 text-yellow-600",
+                professionals: [
+                    { name: "Ana Silva", availability: "Seg-Sex: 8h-17h", rating: 4.9, specialty: "Instalações residenciais" },
+                    { name: "Carla Mendes", availability: "Ter-Sáb: 9h-18h", rating: 4.8, specialty: "Reparos elétricos" },
+                    { name: "Juliana Ferreira", availability: "Seg-Sex: 10h-19h", rating: 4.7, specialty: "Instalações comerciais" }
+                ]
+            },
+            mecanica: {
+                name: "Mecânica de Carro",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                      </svg>`,
+                color: "bg-blue-100 text-blue-600",
+                professionals: [
+                    { name: "Beatriz Santos", availability: "Seg-Sex: 8h-18h", rating: 4.9, specialty: "Mecânica geral" },
+                    { name: "Fernanda Lima", availability: "Ter-Dom: 9h-19h", rating: 4.8, specialty: "Injeção eletrônica" },
+                    { name: "Patrícia Costa", availability: "Seg-Sáb: 7h-16h", rating: 4.7, specialty: "Suspensão e freios" }
+                ]
+            },
+            encanadora: {
+                name: "Encanadora",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                      </svg>`,
+                color: "bg-cyan-100 text-cyan-600",
+                professionals: [
+                    { name: "Daniela Oliveira", availability: "Seg-Sex: 9h-18h", rating: 4.9, specialty: "Reparos hidráulicos" },
+                    { name: "Mariana Souza", availability: "Ter-Sáb: 8h-17h", rating: 4.8, specialty: "Instalações de banheiro" },
+                    { name: "Roberta Alves", availability: "Seg-Sex: 10h-19h", rating: 4.7, specialty: "Detecção de vazamentos" }
+                ]
+            }
+        };
+        
+        // Payment methods data
+        const paymentMethods = {
+            creditCard: {
+                name: "Cartão de Crédito",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>`,
+                color: "bg-indigo-100 text-indigo-600",
+                description: "Até 3x sem juros"
+            },
+            debitCard: {
+                name: "Cartão de Débito",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>`,
+                color: "bg-emerald-100 text-emerald-600",
+                description: "Pagamento à vista"
+            },
+            pix: {
+                name: "PIX",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>`,
+                color: "bg-amber-100 text-amber-600",
+                description: "5% de desconto",
+                discount: "5%"
+            },
+            cash: {
+                name: "Dinheiro",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>`,
+                color: "bg-green-100 text-green-600",
+                description: "3% de desconto",
+                discount: "3%"
+            }
+        };
+        
+        // Keywords for intent recognition
+        const keywords = {
+            services: ['serviço', 'serviços', 'ajuda', 'contratar', 'profissional', 'eletricista', 'mecânica', 'encanadora'],
+            professionals: ['profissional', 'quem', 'disponível', 'especialista'],
+            schedule: ['agendar', 'marcar', 'horário', 'data', 'quando', 'disponibilidade'],
+            location: ['local', 'endereço', 'onde', 'casa', 'residência', 'apartamento'],
+            payment: ['pagamento', 'pagar', 'cartão', 'crédito', 'débito', 'pix', 'dinheiro', 'desconto', 'valor', 'preço']
+        };
+        
+        // Add bot message to chat
+        function addBotMessage(message) {
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                
+                const messageElement = document.createElement('div');
+                messageElement.className = 'bot-message p-3 mb-3 max-w-[80%] text-sm';
+                messageElement.innerHTML = message;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+        
+        // Add user message to chat
+        function addUserMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'user-message p-3 mb-3 ml-auto max-w-[80%] text-sm';
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+        }
+        
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+        
+        // Display options buttons
+        function showOptions(options) {
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = `option-button ${option.color || 'bg-pink-100 text-pink-600'} p-3 flex items-center gap-2 font-medium text-sm`;
+                button.innerHTML = `
+                    ${option.icon || ''}
+                    <span>${option.text}</span>
+                `;
+                button.addEventListener('click', option.action);
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        // Process user input
+        function processUserInput(input) {
+            const lowerInput = input.toLowerCase();
+            
+            // Check for payment related keywords
+            if (chatState.context !== 'payment' && keywords.payment.some(keyword => lowerInput.includes(keyword))) {
+                showPaymentMethods();
+                return;
+            }
+            
+            // Process based on current context
+            switch(chatState.context) {
+                case 'initial':
+                    handleInitialContext(lowerInput);
+                    break;
+                case 'services':
+                    handleServicesContext(lowerInput);
+                    break;
+                case 'professionals':
+                    handleProfessionalsContext(lowerInput);
+                    break;
+                case 'schedule':
+                    handleScheduleContext(lowerInput);
+                    break;
+                case 'location':
+                    handleLocationContext(lowerInput);
+                    break;
+                case 'payment':
+                    handlePaymentContext(lowerInput);
+                    break;
+                case 'confirmation':
+                    handleConfirmationContext(lowerInput);
+                    break;
+                default:
+                    showMainMenu();
+            }
+        }
+        
+        // Handle initial context
+        function handleInitialContext(input) {
+            if (input.includes('serviço') || input.includes('ajuda') || input.includes('contratar')) {
+                showServices();
+            } else {
+                showMainMenu();
+            }
+        }
+        
+        // Handle services context
+        function handleServicesContext(input) {
+            let serviceSelected = false;
+            
+            for (const [key, service] of Object.entries(services)) {
+                if (input.includes(service.name.toLowerCase())) {
+                    selectService(key);
+                    serviceSelected = true;
+                    break;
+                }
+            }
+            
+            if (!serviceSelected) {
+                addBotMessage('Desculpe, não entendi qual serviço você deseja. Por favor, escolha uma das opções abaixo:');
+                showServices();
+            }
+        }
+        
+        // Handle professionals context
+        function handleProfessionalsContext(input) {
+            const service = services[chatState.selectedService];
+            let professionalSelected = false;
+            
+            service.professionals.forEach((professional, index) => {
+                if (input.includes(professional.name.toLowerCase())) {
+                    selectProfessional(index);
+                    professionalSelected = true;
+                }
+            });
+            
+            if (!professionalSelected) {
+                addBotMessage('Desculpe, não entendi qual profissional você deseja. Por favor, escolha uma das opções abaixo:');
+                showProfessionals(chatState.selectedService);
+            }
+        }
+        
+        // Handle schedule context
+        function handleScheduleContext(input) {
+            // Simple date extraction (would need more robust parsing in production)
+            const dateMatch = input.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
+            
+            if (dateMatch) {
+                const day = dateMatch[1].padStart(2, '0');
+                const month = dateMatch[2].padStart(2, '0');
+                const year = dateMatch[3] ? (dateMatch[3].length === 2 ? '20' + dateMatch[3] : dateMatch[3]) : new Date().getFullYear();
+                
+                chatState.appointmentDate = `${day}/${month}/${year}`;
+                
+                // Check for time in the input
+                const timeMatch = input.match(/(\d{1,2})[h:](\d{2})?/);
+                if (timeMatch) {
+                    const hour = timeMatch[1].padStart(2, '0');
+                    const minute = timeMatch[2] ? timeMatch[2].padStart(2, '0') : '00';
+                    chatState.appointmentTime = `${hour}:${minute}`;
+                    
+                    addBotMessage(`Ótimo! Agendamento para ${chatState.appointmentDate} às ${chatState.appointmentTime}. Agora, preciso do seu endereço para o atendimento.`);
+                    chatState.context = 'location';
+                } else {
+                    addBotMessage('Qual horário você prefere para o atendimento?');
+                }
+            } else {
+                // Check for time only
+                const timeMatch = input.match(/(\d{1,2})[h:](\d{2})?/);
+                if (timeMatch && chatState.appointmentDate) {
+                    const hour = timeMatch[1].padStart(2, '0');
+                    const minute = timeMatch[2] ? timeMatch[2].padStart(2, '0') : '00';
+                    chatState.appointmentTime = `${hour}:${minute}`;
+                    
+                    addBotMessage(`Ótimo! Agendamento para ${chatState.appointmentDate} às ${chatState.appointmentTime}. Agora, preciso do seu endereço para o atendimento.`);
+                    chatState.context = 'location';
+                } else {
+                    addBotMessage('Por favor, informe a data desejada para o atendimento (ex: 25/10/2023):');
+                }
+            }
+        }
+        
+        // Handle location context
+        function handleLocationContext(input) {
+            if (input.length > 5) {
+                chatState.location = input;
+                addBotMessage('Agora, vamos escolher a forma de pagamento:');
+                showPaymentMethods();
+            } else {
+                addBotMessage('Por favor, informe seu endereço completo para o atendimento:');
+            }
+        }
+        
+        // Handle payment context
+        function handlePaymentContext(input) {
+            let paymentSelected = false;
+            
+            for (const [key, method] of Object.entries(paymentMethods)) {
+                if (input.includes(method.name.toLowerCase())) {
+                    selectPaymentMethod(key);
+                    paymentSelected = true;
+                    break;
+                }
+            }
+            
+            if (!paymentSelected) {
+                addBotMessage('Por favor, escolha uma das formas de pagamento disponíveis:');
+                showPaymentMethods();
+            }
+        }
+        
+        // Handle confirmation context
+        function handleConfirmationContext(input) {
+            if (input.includes('sim') || input.includes('confirmar') || input.includes('ok')) {
+                addBotMessage('Ótimo! Seu agendamento foi confirmado. Enviaremos uma confirmação por e-mail e um lembrete no dia anterior ao atendimento. Obrigada por escolher a Queridellas!');
+                
+                setTimeout(() => {
+                    addBotMessage('Posso ajudar com mais alguma coisa?');
+                    showMainMenu();
+                }, 2000);
+            } else if (input.includes('não') || input.includes('cancelar')) {
+                addBotMessage('Sem problemas! Vamos recomeçar. Como posso ajudar?');
+                showMainMenu();
+            } else {
+                addBotMessage('Deseja confirmar o agendamento?');
+                showOptions([
+                    {
+                        text: 'Confirmar',
+                        color: 'bg-green-100 text-green-600',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                              </svg>`,
+                        action: () => {
+                            addUserMessage('Confirmar');
+                            handleConfirmationContext('sim');
+                        }
+                    },
+                    {
+                        text: 'Cancelar',
+                        color: 'bg-red-100 text-red-600',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                              </svg>`,
+                        action: () => {
+                            addUserMessage('Cancelar');
+                            handleConfirmationContext('não');
+                        }
+                    }
+                ]);
+            }
+        }
+        
+        // Show main menu
+        function showMainMenu() {
+            chatState.context = 'initial';
+            chatState.selectedService = null;
+            chatState.selectedProfessional = null;
+            chatState.appointmentDate = null;
+            chatState.appointmentTime = null;
+            chatState.location = null;
+            chatState.paymentMethod = null;
+            
+            addBotMessage('Como posso ajudar você hoje?');
+            
+            showOptions([
+                {
+                    text: 'Serviços',
+                    color: 'bg-purple-100 text-purple-600',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>`,
+                    action: () => {
+                        addUserMessage('Serviços');
+                        showServices();
+                    }
+                },
+                {
+                    text: 'Formas de Pagamento',
+                    color: 'bg-green-100 text-green-600',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>`,
+                    action: () => {
+                        addUserMessage('Formas de Pagamento');
+                        showPaymentMethods();
+                    }
+                },
+                {
+                    text: 'Sobre Nós',
+                    color: 'bg-pink-100 text-pink-600',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>`,
+                    action: () => {
+                        addUserMessage('Sobre Nós');
+                        addBotMessage('A Queridellas é uma empresa que conecta mulheres profissionais qualificadas a clientes que precisam de serviços domésticos e automotivos. Nossa missão é valorizar o trabalho feminino em áreas tradicionalmente dominadas por homens, garantindo serviços de qualidade e confiança.');
+                        showMainMenu();
+                    }
+                }
+            ]);
+        }
+        
+        // Show services
+        function showServices() {
+            chatState.context = 'services';
+            
+            addBotMessage('Temos as seguintes profissionais disponíveis. Qual serviço você precisa?');
+            
+            const options = Object.entries(services).map(([key, service]) => ({
+                text: service.name,
+                color: service.color,
+                icon: service.icon,
+                action: () => {
+                    addUserMessage(service.name);
+                    selectService(key);
+                }
+            }));
+            
+            showOptions(options);
+        }
+        
+        // Select a service
+        function selectService(serviceKey) {
+            chatState.selectedService = serviceKey;
+            const service = services[serviceKey];
+            
+            addBotMessage(`Ótima escolha! Temos excelentes profissionais ${service.name.toLowerCase()}s disponíveis. Veja nossas especialistas:`);
+            
+            showProfessionals(serviceKey);
+        }
+        
+        // Show professionals for a service
+        function showProfessionals(serviceKey) {
+            chatState.context = 'professionals';
+            
+            const service = services[serviceKey];
+            const professionals = service.professionals;
+            
+            const options = professionals.map((professional, index) => ({
+                text: professional.name,
+                color: service.color,
+                icon: `<div class="w-5 h-5 rounded-full bg-white flex items-center justify-center text-xs font-bold ${service.color.split(' ')[1]}">${professional.rating}</div>`,
+                action: () => {
+                    addUserMessage(professional.name);
+                    selectProfessional(index);
+                }
+            }));
+            
+            showOptions(options);
+            
+            let professionalsHTML = '';
+            professionals.forEach(professional => {
+                professionalsHTML += `
+                <div class="mb-2 p-2 border border-pink-100 rounded-lg">
+                    <div class="font-bold">${professional.name}</div>
+                    <div class="text-xs flex justify-between">
+                        <span>⭐ ${professional.rating}</span>
+                        <span>${professional.availability}</span>
+                    </div>
+                    <div class="text-xs italic mt-1">${professional.specialty}</div>
+                </div>`;
+            });
+            
+            addBotMessage(`Escolha uma profissional para seu serviço de ${service.name.toLowerCase()}:<br>${professionalsHTML}`);
+        }
+        
+        // Select a professional
+        function selectProfessional(index) {
+            const service = services[chatState.selectedService];
+            const professional = service.professionals[index];
+            chatState.selectedProfessional = index;
+            
+            addBotMessage(`Você escolheu ${professional.name}, especialista em ${professional.specialty}. Quando você gostaria de agendar o serviço? (Disponibilidade: ${professional.availability})`);
+            
+            chatState.context = 'schedule';
+        }
+        
+        // Show payment methods
+        function showPaymentMethods() {
+            chatState.context = 'payment';
+            
+            addBotMessage('Aceitamos as seguintes formas de pagamento:');
+            
+            let paymentHTML = '<div class="grid grid-cols-2 gap-3 mt-2">';
+            
+            for (const [key, method] of Object.entries(paymentMethods)) {
+                paymentHTML += `
+                <div class="payment-card ${method.color} p-3 rounded-lg relative">
+                    <div class="flex items-center gap-2">
+                        ${method.icon}
+                        <span class="font-bold">${method.name}</span>
+                    </div>
+                    <div class="text-xs mt-1">${method.description}</div>
+                    ${method.discount ? `<div class="discount-badge bg-pink-500 text-white">-${method.discount}</div>` : ''}
+                </div>`;
+            }
+            
+            paymentHTML += '</div>';
+            
+            addBotMessage(paymentHTML);
+            
+            const options = Object.entries(paymentMethods).map(([key, method]) => ({
+                text: method.name,
+                color: method.color,
+                icon: method.icon,
+                action: () => {
+                    addUserMessage(method.name);
+                    selectPaymentMethod(key);
+                }
+            }));
+            
+            showOptions(options);
+        }
+        
+        // Select payment method
+        function selectPaymentMethod(paymentKey) {
+            chatState.paymentMethod = paymentKey;
+            const method = paymentMethods[paymentKey];
+            
+            let message = `Você escolheu pagar com ${method.name}.`;
+            
+            if (method.discount) {
+                message += ` Você receberá ${method.discount} de desconto no valor final!`;
+            }
+            
+            addBotMessage(message);
+            
+            if (chatState.selectedService && chatState.selectedProfessional !== null && 
+                chatState.appointmentDate && chatState.appointmentTime && chatState.location) {
+                showAppointmentSummary();
+            } else {
+                addBotMessage('Vamos continuar com seu agendamento. O que você precisa?');
+                showMainMenu();
+            }
+        }
+        
+        // Show appointment summary
+        function showAppointmentSummary() {
+            const service = services[chatState.selectedService];
+            const professional = service.professionals[chatState.selectedProfessional];
+            const paymentMethod = paymentMethods[chatState.paymentMethod];
+            
+            let summaryHTML = `
+            <div class="bg-pink-50 p-3 rounded-lg border border-pink-200">
+                <h3 class="font-bold text-pink-700 mb-2">Resumo do Agendamento</h3>
+                <ul class="space-y-1 text-xs">
+                    <li><span class="font-semibold">Serviço:</span> ${service.name}</li>
+                    <li><span class="font-semibold">Profissional:</span> ${professional.name}</li>
+                    <li><span class="font-semibold">Data:</span> ${chatState.appointmentDate}</li>
+                    <li><span class="font-semibold">Horário:</span> ${chatState.appointmentTime}</li>
+                    <li><span class="font-semibold">Local:</span> ${chatState.location}</li>
+                    <li><span class="font-semibold">Pagamento:</span> ${paymentMethod.name}`;
+            
+            if (paymentMethod.discount) {
+                summaryHTML += ` <span class="bg-pink-500 text-white text-xs px-1 py-0.5 rounded">-${paymentMethod.discount}</span>`;
+            }
+            
+            summaryHTML += `</li>
+                </ul>
+            </div>`;
+            
+            addBotMessage(`${summaryHTML}<br>Está tudo certo com essas informações?`);
+            
+            chatState.context = 'confirmation';
+            
+            showOptions([
+                {
+                    text: 'Confirmar',
+                    color: 'bg-green-100 text-green-600',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                          </svg>`,
+                    action: () => {
+                        addUserMessage('Confirmar');
+                        handleConfirmationContext('sim');
+                    }
+                },
+                {
+                    text: 'Cancelar',
+                    color: 'bg-red-100 text-red-600',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>`,
+                    action: () => {
+                        addUserMessage('Cancelar');
+                        handleConfirmationContext('não');
+                    }
+                }
+            ]);
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', () => {
+            const message = userInput.value.trim();
+            if (message) {
+                addUserMessage(message);
+                userInput.value = '';
+                processUserInput(message);
+            }
+        });
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const message = userInput.value.trim();
+                if (message) {
+                    addUserMessage(message);
+                    userInput.value = '';
+                    processUserInput(message);
+                }
+            }
+        });
+        
+        // Start the chat
+        addBotMessage('Olá! Bem-vinda ao atendimento da Queridellas, serviços femininos para sua casa. Como posso ajudar você hoje?');
+        showMainMenu();
+    });
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94621534a48d647b',t:'MTc0ODMxMjk0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+</body>
+</html>
+
+
+
+
+
+
+
