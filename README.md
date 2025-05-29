@@ -65,7 +65,4 @@ O projeto inclui um exemplo funcional de **bot com Inteligência Artificial**, c
 
 Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](https://github.com/emilymarc/queridellas/blob/main/LICENSE) para mais informações.
 
----
-
-Se quiser, posso gerar esse arquivo para você copiar e colar ou criar um PR com ele. Quer que eu gere o arquivo completo pra colar direto no GitHub?
 
